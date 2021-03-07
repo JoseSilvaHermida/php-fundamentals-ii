@@ -2,6 +2,7 @@
 
 namespace Machine;
 
+use Common\MachineStatusTrait;
 use Info\JsonReport;
 
 class VPS extends Machine
@@ -19,6 +20,8 @@ class VPS extends Machine
         parent::__construct( $name );
         $this->ram  = $ram;
         $this->hd   = $hd;
+
+        printf("New %s machine: %s\n", parent::OS, $this->name);
     }
 
     /**
@@ -26,7 +29,7 @@ class VPS extends Machine
      * @param bool $autostart
      * @return bool|void
      */
-    public function create( bool $autostart = false ) {
+    public function create( bool $autostart = false ): bool {
         // TODO: Actually create the VPS
 
         // Start the VPS after creation
@@ -41,84 +44,41 @@ class VPS extends Machine
      * Delete the VPS if it is stopped
      * @return bool
      */
-    public function delete() {
+    public function delete(): bool {
         // TODO: Actually delete the VPS
 
+        if ( ! $this->exists() ) {
+            echo "Machine does not exist\n";
+            return false;
+        }
+
         if ( $this->isRunning() ) {
+            echo "Machine is still running\n";
             return false;
         }
 
         return true;
     }
 
-    /**
-     * Implement the method to start the VPS
-     * @return bool
-     */
-    public function start() {
-        return true;
-    }
-
-    /**
-     * Implement the method to stop the VPS
-     * @return bool
-     */
-    public function stop() {
-        return true;
-    }
-
-    /**
-     * Check if the VPS is running
-     * @return bool
-     */
-    protected function isRunning() {
-        // Randomly decide if the VPS is running or not
-        if ( rand(0, 5) == 0 ) {
-            return false;
-        }
-
-        return true;
-    }
+    use MachineStatusTrait;
 
     /**
      * Returns VPS data
      * @return string
      */
-    public function __toString() {
+    public function __toString(): string {
         return 'Name='.$this->name.',RAM='.$this->ram.',HD='.$this->hd;
     }
 
-    /**
-     * Magic method triggered fetching a non-existant property
-     * @param $name
-     * @throws \Exception
-     */
-    public function __get( $name ) {
-        throw new \Exception("Property $name does not exist");
-    }
-
-    /**
-     * Magic method triggered setting a non-existant property
-     * @param $name
-     * @param $value
-     * @throws \Exception
-     */
-    public function __set($name, $value ) {
-        throw new \Exception("Cannot assign value $value to property $name");
-    }
-
-    public function __destruct()
-    {
+    public function __destruct() {
         echo "GAME OVER YEEEAH!\n";
-        return true;
     }
 
     /**
      * Generate a report
      * @return string
      */
-    public function getReport()
-    {
+    public function getReport() {
         return new JsonReport([
             'name'  => $this->name,
             'ram'   => $this->ram,
