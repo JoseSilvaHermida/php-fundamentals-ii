@@ -1,0 +1,12 @@
+{
+  "name": "zend/orderapp",
+  "description": "Order application for customer orders",
+  "keywords": [
+    "Order App"
+  ],
+  "homepage": "http://orderapp/",
+  "require": {
+    "php": ">=5.5",
+    "guzzlehttp/guzzle": "~6.0"
+  }
+}
